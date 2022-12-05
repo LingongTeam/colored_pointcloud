@@ -6,7 +6,7 @@
   <arg name="save_data" default="false" />
   
   <node pkg="colored_pointcloud" type="colored_pointcloud_node161" name="colored_pointcloud_node" output="screen">
-    <param name="camera_topic" type="str" value="/camera_front/image_color" />
+    <param name="camera_topic" type="str" value="/usb_cam1/image_raw" />
     <param name="lidar_topic" type="str" value="/rslidar_points" />
     <param name="calib_file_path" type="str" value="$(find colored_pointcloud)/config" />
     <param name="file_name" type="str" value="calib_result.yaml" />

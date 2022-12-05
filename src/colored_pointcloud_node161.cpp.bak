@@ -175,9 +175,9 @@ class RsCamFusion
       cv::Mat image_to_show = input_image.clone();
       for(int i=0;i<imagePoints.size();i++)
       {
-        if(imagePoints[i].x>=0 && imagePoints[i].x<imageSize.width && imagePoints[i].y>=0 && imagePoints[i].y<imageSize.height)
+        if(imagePoints[i].x>=0 && imagePoints[i].x<1920 && imagePoints[i].y>=0 && imagePoints[i].y<1200)
         {
-          cv::circle(image_to_show, imagePoints[i], 1, dis_color[i], 2, 8, 0);            //void cv::circle (InputOutputArray img, Point center, int radius, const Scalar &color, int thickness=1, int lineType=LINE_8, int shift=0)
+          cv::circle(image_to_show, imagePoints[i], 1, dis_color[i], 2, 8, 0);
           PointXYZRGBI point;                                                             //reserve the lidar points in the range of image 
           point.x = lidar_points[i].x;                                                        //use 3D lidar points and RGB value of the corresponding pixels  
           point.y = lidar_points[i].y;                                                        //to create colored point clouds
@@ -185,19 +185,8 @@ class RsCamFusion
           point.r = input_image.at<cv::Vec3b>(imagePoints[i].y, imagePoints[i].x)[2];
           point.g = input_image.at<cv::Vec3b>(imagePoints[i].y, imagePoints[i].x)[1];
           point.b = input_image.at<cv::Vec3b>(imagePoints[i].y, imagePoints[i].x)[0];
-          point.intensity = intensity[i];
+          point.i = intensity[i];
           colored_cloud->points.push_back(point);  
-        }
-        else{
-          PointXYZRGBI point;                                                             //相机范围外的点云，全部涂白色
-          point.x = lidar_points[i].x;                                                      
-          point.y = lidar_points[i].y; 
-          point.z = lidar_points[i].z;
-          point.r = 255;
-          point.g = 255;
-          point.b = 255;
-          point.intensity = intensity[i];
-          colored_cloud->points.push_back(point);
         }
       }
       //transform colored points from camera coordinate to lidar coordinate
@@ -206,18 +195,18 @@ class RsCamFusion
       if(show_colored_cloud)
       {  
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr colored_cloud_toshow (new pcl::PointCloud<pcl::PointXYZRGB>);
-        // for(int i=0;i<colored_cloud_transback->points.size();i++)
-        // {
-        //     pcl::PointXYZRGB point;                                                             
-        //     point.x = colored_cloud_transback->points[i].x;                                                        
-        //     point.y = colored_cloud_transback->points[i].y;                                                        
-        //     point.z = colored_cloud_transback->points[i].z;
-        //     point.r = colored_cloud_transback->points[i].r;
-        //     point.g = colored_cloud_transback->points[i].g;
-        //     point.b = colored_cloud_transback->points[i].b;
-        //     colored_cloud_toshow->points.push_back (point);  
-        // }
-        publishCloudtoShow(colored_cloud_showpub, cloud_header, colored_cloud_transback);
+        for(int i=0;i<colored_cloud_transback->points.size();i++)
+        {
+            pcl::PointXYZRGB point;                                                             
+            point.x = colored_cloud_transback->points[i].x;                                                        
+            point.y = colored_cloud_transback->points[i].y;                                                        
+            point.z = colored_cloud_transback->points[i].z;
+            point.r = colored_cloud_transback->points[i].r;
+            point.g = colored_cloud_transback->points[i].g;
+            point.b = colored_cloud_transback->points[i].b;
+            colored_cloud_toshow->points.push_back (point);  
+          }
+        publishCloudtoShow(colored_cloud_showpub, cloud_header, colored_cloud_toshow);
       } 
 
       publishImage(fused_image_pub, image_header, image_to_show);
@@ -254,7 +243,7 @@ class RsCamFusion
     }
 
     void publishCloudtoShow(const ros::Publisher& cloudtoshow_pub, const std_msgs::Header& header,
-                      const pcl::PointCloud<PointXYZRGBI>::ConstPtr& cloud)
+                      const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& cloud)
     {
       sensor_msgs::PointCloud2 output_msg;
       pcl::toROSMsg(*cloud, output_msg);
