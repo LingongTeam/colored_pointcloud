@@ -12,5 +12,5 @@ finally change the camera_topic and lidar_topic to fit your own system.
 Usage: 
 <launch your camera and lidar nodes>   
 ```
-roslaunch colored_pointcloud colored_pointcloud161.launch 
+roslaunch colored_pointcloud colored_pointcloud_node161.launch
 ```
