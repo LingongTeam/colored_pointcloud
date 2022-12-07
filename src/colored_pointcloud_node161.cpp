@@ -19,6 +19,7 @@
 #include <pcl/common/transforms.h>	
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
 #include <math.h>
 #include "colored_pointcloud/colored_pointcloud.h"
 #include <sys/stat.h>
@@ -49,7 +50,9 @@ class RsCamFusion
     cv::Mat rMat = cv::Mat::eye(3, 3, CV_64FC1);
     cv::Mat tVec = cv::Mat::zeros(3, 1, CV_64FC1); // Translation vector
     bool show_colored_cloud, save_data;
-    std::string image_save_dir, cloud_save_dir, colored_cloud_save_dir;
+    std::string image_save_dir = "/home/oliver/img";
+    std::string cloud_save_dir = "/home/oliver/pcd";
+    std::string colored_cloud_save_dir = "/home/oliver/pcd";
 
     int color[21][3] = 
     {
@@ -244,6 +247,7 @@ class RsCamFusion
       std::string img_name = std::to_string(frame_count) + "_" + std::to_string(image_header.stamp.sec) + "_" + std::to_string(image_header.stamp.nsec) + ".jpg";
       std::string cloud_name = std::to_string(frame_count) + "_" + std::to_string(cloud_header.stamp.sec) + "_" + std::to_string(cloud_header.stamp.nsec) + ".pcd";
       std::string colored_cloud_name = "c_" + std::to_string(frame_count) + "_" + std::to_string(cloud_header.stamp.sec) + "_" + std::to_string(cloud_header.stamp.nsec) + ".pcd";
+      std::string colored_cloud_namey = "c_" + std::to_string(frame_count) + "_" + std::to_string(cloud_header.stamp.sec) + "_" + std::to_string(cloud_header.stamp.nsec) + ".ply";
       cv::imwrite(image_save_dir + "/" + img_name, image);
       pcl::io::savePCDFileASCII(cloud_save_dir + "/" + cloud_name, *cloud);
       colored_cloud->width = cloud->size();
@@ -251,6 +255,7 @@ class RsCamFusion
       colored_cloud->is_dense = false;
       colored_cloud->points.resize(cloud->width * cloud->height);
       pcl::io::savePCDFileASCII(colored_cloud_save_dir + "/" + colored_cloud_name, *colored_cloud);
+      pcl::io::savePLYFile (colored_cloud_save_dir + "/" + colored_cloud_namey, *colored_cloud); 
     }
 
     void publishCloudtoShow(const ros::Publisher& cloudtoshow_pub, const std_msgs::Header& header,
