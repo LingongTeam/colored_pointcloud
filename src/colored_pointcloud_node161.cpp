@@ -94,23 +94,23 @@ class RsCamFusion
       color_distance = color_dis;
       show_colored_cloud = show_cloud;
       save_data = save;
-      if(save_data)
-      {
-        time_t rawtime;
-        struct tm *ptminfo;
-        time(&rawtime);
-        ptminfo = localtime(&rawtime);
-        std::string currentdate = "/data/" + std::to_string(ptminfo->tm_year + 1900) + std::to_string(ptminfo->tm_mon + 1) 
-                                          + std::to_string(ptminfo->tm_mday) + std::to_string(ptminfo->tm_hour) 
-                                          + std::to_string(ptminfo->tm_min) + std::to_string(ptminfo->tm_sec);
-        mkdir(currentdate.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
-        image_save_dir = currentdate + "/front_camera";
-        mkdir(image_save_dir.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
-        cloud_save_dir = currentdate + "/rslidar_points";
-        mkdir(cloud_save_dir.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
-        colored_cloud_save_dir = currentdate + "/colored_cloud";
-        mkdir(colored_cloud_save_dir.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
-      }
+      // if(save_data)
+      // {
+      //   time_t rawtime;
+      //   struct tm *ptminfo;
+      //   time(&rawtime);
+      //   ptminfo = localtime(&rawtime);
+        // std::string currentdate = "/data/" + std::to_string(ptminfo->tm_year + 1900) + std::to_string(ptminfo->tm_mon + 1) 
+        //                                   + std::to_string(ptminfo->tm_mday) + std::to_string(ptminfo->tm_hour) 
+        //                                   + std::to_string(ptminfo->tm_min) + std::to_string(ptminfo->tm_sec);
+        // mkdir(currentdate.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
+        // image_save_dir = currentdate + "/front_camera";
+        // // mkdir(image_save_dir.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
+        // cloud_save_dir = currentdate + "/rslidar_points";
+        // // mkdir(cloud_save_dir.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
+        // colored_cloud_save_dir = currentdate + "/colored_cloud";
+      //   // mkdir(colored_cloud_save_dir.c_str(),S_IRUSR | S_IWUSR | S_IXUSR | S_IRWXG | S_IRWXO);
+      // }
     }
 
     void callback(const sensor_msgs::ImageConstPtr input_image_msg,
